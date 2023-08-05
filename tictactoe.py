@@ -93,7 +93,7 @@ class TicTacToe:
 				for j in range(3):
 					if board[i][j] == ' ':
 						board[i][j] = player1
-						score = self.minimax(board, depth + 1, False, player1, player2)
+						score = self.minimax(board, depth + 1, False, player1, player2, max_depth)
 						board[i][j] = ' '
 						best_score = max(score, best_score)
 			return best_score
@@ -103,7 +103,7 @@ class TicTacToe:
 				for j in range(3):
 					if board[i][j] == ' ':
 						board[i][j] = player2
-						score = self.minimax(board, depth + 1, True, player1, player2)
+						score = self.minimax(board, depth + 1, True, player1, player2, max_depth)
 						board[i][j] = ' '
 						best_score = min(score, best_score)
 			return best_score
@@ -134,10 +134,20 @@ class TicTacToe:
 
 		return best_move
 
+	def print_stats(self, wins, losses, ties):
+		print("========== Statistics ==========")
+		print(f"Wins: {wins}")
+		print(f"Losses: {losses}")
+		print(f"Ties: {ties}")
+		print("===============================")
+
 	def tic_tac_toe_game(self):
 		player1 = 'X'
 		player2 = 'O'
 		ai_player = player2
+		wins = 0
+		losses = 0
+		ties = 0
 
 		while True:
 			board = self.create_board()
@@ -148,28 +158,45 @@ class TicTacToe:
 			if vs_ai.lower() == 'no':
 				ai_player = None
 
+			# Ask user to choose difficulty level if playing against the AI
+			if ai_player:
+				difficulty = input("Choose AI difficulty (easy/hard): ")
+				if difficulty.lower() not in ('easy', 'hard'):
+					print("Invalid difficulty level. Defaulting to hard.")
+					difficulty = 'hard'
+			else:
+				difficulty = None
+
 			while not self.is_game_over(board, current_player):
 				self.display_board(board)
 
-			if current_player == ai_player:
-				row, col = self.get_best_move(board, player1, player2)
-				print(f"AI plays at row {row}, column {col}.")
-			else:
-				row, col = self.get_move(current_player)
+				if current_player == ai_player:
+					row, col = self.get_best_move(board, player1, player2, difficulty)
+					self.make_move(board, current_player, row, col)
+					print(f"AI plays at row {row}, column {col}.")
+				else:
+					row, col = self.get_move(current_player)
 
-				if not self.make_move(board, current_player, row, col):
-					print("Cell already taken. Try again.")
-					continue
+					if not self.make_move(board, current_player, row, col):
+						print("Cell already taken. Try again.")
+						continue
 
-			current_player = player2 if current_player == player1 else player1
+				current_player = player2 if current_player == player1 else player1
 
 			self.display_board(board)
 
 			winner = self.get_winner(board, player1, player2)
 			if winner:
 				print(f"Player {winner} wins!")
+				if winner == 'X':
+					wins += 1
+				else:
+					losses += 1
 			else:
 				print("It's a tie!")
+				ties += 1
+
+			self.print_stats(wins, losses, ties)
 
 			if not self.play_again():
 				break
