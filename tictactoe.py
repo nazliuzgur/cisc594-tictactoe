@@ -67,35 +67,6 @@ class TicTacToe:
 		for i in range(3):
 			for j in range(3):
 				board[i][j] = ' '
-
-	def tic_tac_toe_game(self):
-		player1 = 'X'
-		player2 = 'O'
-
-		while True:
-			board = self.create_board()
-			current_player = player1
-
-			while not self.is_game_over(board, current_player):
-				self.display_board(board)
-				row, col = self.get_move(current_player)
-
-				if not self.make_move(board, current_player, row, col):
-					print("Cell already taken. Try again.")
-					continue
-
-				current_player = player2 if current_player == player1 else player1
-
-			self.display_board(board)
-
-			winner = self.get_winner(board, player1, player2)
-			if winner:
-				print(f"Player {winner} wins!")
-			else:
-				print("It's a tie!")
-
-			if not self.play_again():
-				break
 	
 	def evaluate(self, board, player1, player2):
 		if self.check_win(board, player1):
@@ -150,6 +121,46 @@ class TicTacToe:
 						best_move = (i, j)
 
 		return best_move
+
+	def tic_tac_toe_game(self):
+		player1 = 'X'
+		player2 = 'O'
+		ai_player = player2
+
+		while True:
+			board = self.create_board()
+			current_player = player1
+
+			# Ask user if they want to play against the AI
+			vs_ai = input("Do you want to play against the AI? (yes/no): ")
+			if vs_ai.lower() == 'no':
+				ai_player = None
+
+			while not self.is_game_over(board, current_player):
+				self.display_board(board)
+
+			if current_player == ai_player:
+				row, col = self.get_best_move(board, player1, player2)
+				print(f"AI plays at row {row}, column {col}.")
+			else:
+				row, col = self.get_move(current_player)
+
+				if not self.make_move(board, current_player, row, col):
+					print("Cell already taken. Try again.")
+					continue
+
+			current_player = player2 if current_player == player1 else player1
+
+			self.display_board(board)
+
+			winner = self.get_winner(board, player1, player2)
+			if winner:
+				print(f"Player {winner} wins!")
+			else:
+				print("It's a tie!")
+
+			if not self.play_again():
+				break
 
 if __name__ == "__main__":
 	game = TicTacToe()
