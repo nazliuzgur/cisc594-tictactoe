@@ -1,13 +1,15 @@
 class TicTacToe:
+	def __init__(self):
+		self.board = []
+
 	def create_board(self):
-		return [[' ' for _ in range(3)] for _ in range(3)]
+		for i in range(3):
+			row = []
+			for j in range(3):
+				row.append('-')
+				self.board.append(row)
 
-	def display_board(self, board):
-		for row in board:
-			print("|".join(row))
-			print("-----")
-
-	def get_move(self, player):
+	def get_move(player):
 		while True:
 			try:
 				row = int(input(f"Player {player}, enter row number (0, 1, or 2): "))
@@ -19,14 +21,14 @@ class TicTacToe:
 			except ValueError:
 				print("Invalid input! Please enter numbers for row and column.")
 
-	def make_move(self, board, player, row, col):
+	def make_move(board, player, row, col):
 		if board[row][col] == ' ':
 			board[row][col] = player
 			return True
 
 		return False
 
-	def check_win(self, board, player):
+	def check_win(board, player):
 		for row in board:
 			if all(cell == player for cell in row):
 				return True
@@ -40,61 +42,60 @@ class TicTacToe:
 
 		return False
 
-	def check_tie(self, board):
+	def check_tie(board):
 		for row in board:
 			if ' ' in row:
 				return False
 		return True
 
-	def is_game_over(self, board, player):
+	def is_game_over(board, player):
 		return self.check_win(board, player) or self.check_tie(board)
 
-	def get_winner(self, board, player1, player2):
-		if self.check_win(board, player1):
+	def get_winner(board, player1, player2):
+		if check_win(board, player1):
 			return player1
-		elif self.check_win(board, player2):
+		elif check_win(board, player2):
 			return player2
 		else:
 			return None
 
-	def play_again(self):
+	def play_again():
 		response = input("Do you want to play again? (yes/no): ")
 		return response.lower() == 'yes'
 
-	def reset_board(self, board):
+	def reset_board(board):
 		for i in range(3):
 			for j in range(3):
 				board[i][j] = ' '
 
-	def tic_tac_toe_game(self):
+	def tic_tac_toe_game():
 		player1 = 'X'
 		player2 = 'O'
 
 		while True:
-			board = self.create_board()
+			board = create_board()
 			current_player = player1
 
-			while not self.is_game_over(board, current_player):
-				self.display_board(board)
-				row, col = self.get_move(current_player)
+			while not is_game_over(board, current_player):
+				display_board(board)
+				row, col = get_move(current_player)
 
-				if not self.make_move(board, current_player, row, col):
+				if not make_move(board, current_player, row, col):
 					print("Cell already taken. Try again.")
 					continue
 
 				current_player = player2 if current_player == player1 else player1
 
-			self.display_board(board)
+		display_board(board)
 
-			winner = self.get_winner(board, player1, player2)
-			if winner:
-				print(f"Player {winner} wins!")
-			else:
-				print("It's a tie!")
+		winner = get_winner(board, player1, player2)
+		if winner:
+			print(f"Player {winner} wins!")
+		else:
+			print("It's a tie!")
 
-			if not self.play_again():
-				break
+		if not play_again():
+			break
 
 if __name__ == "__main__":
-	game = TicTacToe()
-	game.tic_tac_toe_game()
+    tic_tac_toe_game()
