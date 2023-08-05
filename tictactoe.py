@@ -76,7 +76,10 @@ class TicTacToe:
 		else:
 			return 0
 
-	def minimax(self, board, depth, is_maximizing, player1, player2):
+	def minimax(self, board, depth, is_maximizing, player1, player2, max_depth):
+		if depth >= max_depth:
+			return 0
+
 		if self.check_win(board, player1):
 			return 1
 		elif self.check_win(board, player2):
@@ -105,7 +108,16 @@ class TicTacToe:
 						best_score = min(score, best_score)
 			return best_score
 
-	def get_best_move(self, board, player1, player2):
+	def get_best_move(self, board, player1, player2, difficulty):
+		# Easy level: limit the AI's search space to a depth of 1
+		if difficulty == 'easy':
+			max_depth = 1
+		# Hard level: allow the AI to search more moves ahead
+		elif difficulty == 'hard':
+			max_depth = 5
+		else:
+			raise ValueError("Invalid difficulty level!")
+
 		best_score = -math.inf
 		best_move = None
 
@@ -113,7 +125,7 @@ class TicTacToe:
 			for j in range(3):
 				if board[i][j] == ' ':
 					board[i][j] = player1
-					score = self.minimax(board, 0, False, player1, player2)
+					score = self.minimax(board, 0, False, player1, player2, max_depth)
 					board[i][j] = ' '
 
 					if score > best_score:
