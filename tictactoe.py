@@ -181,14 +181,6 @@ class TicTacToe:
 						print("Cell already taken. Try again.")
 						continue
 
-			while not self.is_game_over(board, current_player):
-				self.display_board(board)
-				row, col = self.get_move(current_player)
-
-				if not self.make_move(board, current_player, row, col):
-					print("Cell already taken. Try again.")
-					continue
-
 				current_player = player2 if current_player == player1 else player1
 
 			self.display_board(board)
@@ -205,9 +197,6 @@ class TicTacToe:
 				ties += 1
 
 			self.print_stats(wins, losses, ties)
-
-			else:
-				print("It's a tie!")
 
 			if not self.play_again():
 				break
